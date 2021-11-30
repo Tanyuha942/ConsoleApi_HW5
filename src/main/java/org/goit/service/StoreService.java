@@ -1,36 +1,33 @@
 package org.goit.service;
 
+import com.google.gson.Gson;
 import io.netty.handler.codec.http.HttpMethod;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
+import org.goit.model.store.Store;
 
 public class StoreService {
 
   private static final String URL = "https://petstore.swagger.io/v2/store";
   private static HttpGet httpGet;
-  private static final int ID = 0;
+  private static final Gson GSON = new Gson();
+  private static final Store store = new Store();
 
   private static String getBody(Integer id, Integer petId, Integer quantity) {
+
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     format.setTimeZone(TimeZone.getTimeZone("UTC"));
     Date date = new Date(System.currentTimeMillis());
-    return "{\n"
-        + "  \"id\": " + id + ",\n"
-        + "  \"petId\": " + petId + ",\n"
-        + "  \"quantity\": " + quantity + ",\n"
-        + "  \"shipDate\": \"" + format.format(date)  + "\",\n"
-        + "  \"status\": \"placed\",\n"
-        + "  \"complete\": true\n"
-        + "}";
+    store.setId(id);
+    store.setPetId(petId);
+    store.setQuantity(quantity);
+    store.setShipDate(format.format(date));
+    return GSON.toJson(store);
   }
 
   public static String inventory() throws IOException, HttpException {
@@ -48,7 +45,7 @@ public class StoreService {
   }
 
   public static String orderPet() throws IOException, HttpException {
-    return orderPet(ID, ID, ID);
+    return orderPet(store.getId(), store.getPetId(), store.getQuantity());
   }
 
   public static String findOrderById(Integer id) throws IOException, HttpException {

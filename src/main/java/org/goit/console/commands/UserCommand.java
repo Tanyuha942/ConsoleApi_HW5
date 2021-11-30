@@ -9,20 +9,33 @@ import org.goit.service.UserService;
 
 public class UserCommand implements Command {
 
-  private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(UserCommand.class);
+  private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(
+      UserCommand.class);
   private String[] paramsArray = new String[0];
 
   @Override
   public void handle(String params, Consumer<Command> setActive) throws Exception {
     paramsArray = params.split(" ");
-    String subParams = String.join(" ", params.replace(paramsArray[0]+ " ", ""));
+    String subParams = String.join(" ", params.replace(paramsArray[0] + " ", ""));
     switch (paramsArray[0]) {
-      case "createUser": createUser(subParams); break;
-      case "getUserByName" : getUserByName(subParams); break;
-      case "updateUser": updateUser(subParams); break;
-      case "deleteUser": deleteUser(subParams); break;
-      case "userLogin": userLogin(subParams); break;
-      case "userLogout": userLogout(); break;
+      case "createUser":
+        createUser(subParams);
+        break;
+      case "getUserByName":
+        getUserByName(subParams);
+        break;
+      case "updateUser":
+        updateUser(subParams);
+        break;
+      case "deleteUser":
+        deleteUser(subParams);
+        break;
+      case "userLogin":
+        userLogin(subParams);
+        break;
+      case "userLogout":
+        userLogout();
+        break;
     }
   }
 
@@ -38,8 +51,7 @@ public class UserCommand implements Command {
           paramsArray[5],
           paramsArray[6],
           Integer.parseInt(paramsArray[7])));
-    }
-    else {
+    } else {
       System.out.println(UserService.createUser());
     }
   }
@@ -51,21 +63,21 @@ public class UserCommand implements Command {
 
   private void updateUser(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
-    if (paramsArray.length > 1) {
+    if (paramsArray.length == 8) {
       System.out.println(UserService
-          .updateUser(Integer.parseInt( paramsArray[0]),
-                                        paramsArray[1],
-                                        paramsArray[2],
-                                        paramsArray[3],
-                                        paramsArray[4],
-                                        paramsArray[5],
-                                        paramsArray[6],
-                                        Integer.parseInt(paramsArray[7])));
+          .updateUser(Integer.parseInt(paramsArray[0]),
+              paramsArray[1],
+              paramsArray[2],
+              paramsArray[3],
+              paramsArray[4],
+              paramsArray[5],
+              paramsArray[6],
+              Integer.parseInt(paramsArray[7])));
+  } else if (paramsArray.length == 1) {
+      System.out.println(UserService.updateUser(paramsArray[0]));
     }
-    else {
-      System.out.println(UserService.updateUser());
-    }
-  }
+
+}
 
   private void deleteUser(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
@@ -89,8 +101,8 @@ public class UserCommand implements Command {
     LOGGER.info("Without params: createUser" +
                   "With params: createUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0, 1)]");
     LOGGER.info("getUserByName [username]");
-    LOGGER.info("Without params: updateUser\n" +
-                  "With params: updateUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status]");
+    LOGGER.info("With one param: updateUser [userName]\n" +
+                  "With params: updateUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0, 1)]");
     LOGGER.info("deleteUser [username]");
     LOGGER.info("userLogin [userName] [password]");
     LOGGER.info("userLogout");

@@ -1,5 +1,6 @@
 package org.goit.service;
 
+import com.google.gson.Gson;
 import io.netty.handler.codec.http.HttpMethod;
 import java.io.*;
 import java.net.URL;
@@ -11,36 +12,32 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.*;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.goit.model.pets.*;
 
 public class PetService {
 
   private static final String URL = "https://petstore.swagger.io/v2/pet";
-  private static final int ID = 0;
-  private static final String NAME = "string";
-  private static final String STATUS = "available";
   private static HttpPost httpPost;
   private static HttpGet httpGet;
+  private static final Category category = new Category();
+  private static final Tag tag = new Tag();
+  private static final List<Tag> tagList = new ArrayList<>();
+  private static final Pet pet = new Pet();
+  private static final Gson GSON = new Gson();
 
   private static String getBody(Integer id, Integer categoryId, String categoryName, String petName,
                                Integer tagsId, String tagName, String status) {
-    return "{\n"
-        + "  \"id\": " + id + ",\n"
-        + "  \"category\": {\n"
-        + "    \"id\": " + categoryId + ",\n"
-        + "    \"name\": \"" + categoryName + "\"\n"
-        + "  },\n"
-        + "  \"name\": \"" + petName + "\",\n"
-        + "  \"photoUrls\": [\n"
-        + "    \"string\"\n"
-        + "  ],\n"
-        + "  \"tags\": [\n"
-        + "    {\n"
-        + "      \"id\": " + tagsId + ",\n"
-        + "      \"name\": \"" + tagName + "\"\n"
-        + "    }\n"
-        + "  ],\n"
-        + "  \"status\": \"" + status + "\"\n" //available, pending, sold
-        + "}";
+    category.setId(categoryId);
+    category.setName(categoryName);
+    tag.setId(tagsId);
+    tag.setName(tagName);
+    tagList.add(tag);
+    pet.setId(id);
+    pet.setName(petName);
+    pet.setCategory(category);
+    pet.setTags(tagList);
+    pet.setStatus(status);
+    return GSON.toJson(pet);
   }
 
   public static String uploadPetImage(Integer id, String pathFileToPhoto, String additionalMetadata)
@@ -73,7 +70,8 @@ public class PetService {
   }
 
   public static String addPet() throws Exception {
-    return addPet(ID, ID, NAME, NAME, ID, NAME, STATUS);
+    return addPet(pet.getId(), category.getId(), category.getName(), pet.getName(),
+        tag.getId(), tag.getName(), pet.getStatus());
   }
 
   public static String updatePet(Integer id, Integer categoryId, String categoryName,
@@ -86,7 +84,8 @@ public class PetService {
   }
 
   public static String updatePet() throws IOException, HttpException {
-    return updatePet(ID, ID, NAME, NAME, ID, NAME, STATUS);
+    return updatePet(pet.getId(), category.getId(), category.getName(), pet.getName(),
+        tag.getId(), tag.getName(), pet.getStatus());
   }
 
   public static String findPetByStatus(String status) throws IOException, HttpException { //available, pending, sold

@@ -1,6 +1,5 @@
 package org.goit.console;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.*;

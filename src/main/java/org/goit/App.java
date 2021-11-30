@@ -4,7 +4,6 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goit.console.CommandHandler;
-import org.goit.service.UserService;
 
 public class App 
 {

@@ -35,7 +35,7 @@ public class StoreCommand implements Command {
       System.out.println(StoreService.orderPet(Integer.parseInt(paramsArray[0]),
                                                Integer.parseInt(paramsArray[1]),
                                                Integer.parseInt(paramsArray[2])));
-    } else {
+    } else if (paramsArray.length == 1) {
       System.out.println(StoreService.orderPet());
     }
   }
