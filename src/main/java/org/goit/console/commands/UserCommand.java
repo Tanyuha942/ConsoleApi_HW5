@@ -1,10 +1,13 @@
 package org.goit.console.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import org.apache.http.HttpException;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
 import org.goit.console.Command;
+import org.goit.model.user.User;
 import org.goit.service.UserService;
 
 public class UserCommand implements Command {
@@ -36,6 +39,9 @@ public class UserCommand implements Command {
       case "userLogout":
         userLogout();
         break;
+      case "createWithList":
+        createWithList(subParams);
+        break;
     }
   }
 
@@ -43,7 +49,7 @@ public class UserCommand implements Command {
     paramsArray = params.split(" ");
     if (paramsArray.length > 1) {
       System.out.println(UserService.createUser(
-          Integer.parseInt(paramsArray[0]),
+          Long.parseLong(paramsArray[0]),
           paramsArray[1],
           paramsArray[2],
           paramsArray[3],
@@ -51,8 +57,6 @@ public class UserCommand implements Command {
           paramsArray[5],
           paramsArray[6],
           Integer.parseInt(paramsArray[7])));
-    } else {
-      System.out.println(UserService.createUser());
     }
   }
 
@@ -65,7 +69,7 @@ public class UserCommand implements Command {
     paramsArray = params.split(" ");
     if (paramsArray.length == 8) {
       System.out.println(UserService
-          .updateUser(Integer.parseInt(paramsArray[0]),
+          .updateUser(Long.parseLong(paramsArray[0]),
               paramsArray[1],
               paramsArray[2],
               paramsArray[3],
@@ -73,9 +77,7 @@ public class UserCommand implements Command {
               paramsArray[5],
               paramsArray[6],
               Integer.parseInt(paramsArray[7])));
-  } else if (paramsArray.length == 1) {
-      System.out.println(UserService.updateUser(paramsArray[0]));
-    }
+  }
 
 }
 
@@ -94,17 +96,38 @@ public class UserCommand implements Command {
     System.out.println(UserService.userLogout());
   }
 
+  public static void createWithList(String params) throws HttpException, IOException {
+    List<User> users = new ArrayList<>();
+    List<String> userList = List.of(params.split(";"));
+    for (String s : userList) {
+      if (s.split(" ").length != 0) {
+        List<String> str = List.of(s.split(" "));
+        User user = new User();
+        user.setId(Long.parseLong(str.get(0)));
+        user.setUserName(str.get(1));
+        user.setFirstName(str.get(2));
+        user.setLastName(str.get(3));
+        user.setEmail(str.get(4));
+        user.setPassword(str.get(5));
+        user.setPhone(str.get(6));
+        user.setUserStatus(Integer.parseInt(str.get(7)));
+        users.add(user);
+      }
+    }
+    System.out.println(users);
+    System.out.println(UserService.createWithList(users));
+  }
+
   @Override
   public void printActiveMenu() {
     LOGGER.info("---------------------User menu---------------------");
     LOGGER.info("Users command list:");
-    LOGGER.info("Without params: createUser" +
-                  "With params: createUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0, 1)]");
+    LOGGER.info("createUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0)]");
     LOGGER.info("getUserByName [username]");
-    LOGGER.info("With one param: updateUser [userName]\n" +
-                  "With params: updateUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0, 1)]");
+    LOGGER.info("updateUser [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0)]");
     LOGGER.info("deleteUser [username]");
     LOGGER.info("userLogin [userName] [password]");
+    LOGGER.info("createWithList [id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0)];[id] [userName] [firstName] [lastName] [email] [password] [phone] [status(0)]...");
     LOGGER.info("userLogout");
   }
 }

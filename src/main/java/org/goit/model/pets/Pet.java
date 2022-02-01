@@ -2,11 +2,12 @@ package org.goit.model.pets;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
+import org.goit.model.IObjectToString;
 
-public class Pet {
+public class Pet implements IObjectToString {
 
   @SerializedName("id")
-  private Integer id;
+  private Long id;
 
   @SerializedName("category")
   private Category category;
@@ -23,11 +24,11 @@ public class Pet {
   @SerializedName("status")
   private String status;
 
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -69,5 +70,10 @@ public class Pet {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  @Override
+  public String toString() {
+    return jsonObjectString().toJson(this);
   }
 }

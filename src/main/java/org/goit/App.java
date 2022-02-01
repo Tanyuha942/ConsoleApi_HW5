@@ -1,12 +1,11 @@
 package org.goit;
 
 import java.util.Scanner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.goit.console.CommandHandler;
 
-public class App 
-{
+public class App {
+
     private static final Logger LOGGER = LogManager.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
@@ -16,7 +15,6 @@ public class App
     }
 
     public static void runMainApp() throws Exception {
-
         CommandHandler commandHandler = new CommandHandler();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNext()) {

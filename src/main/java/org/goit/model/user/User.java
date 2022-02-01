@@ -1,38 +1,39 @@
 package org.goit.model.user;
 
 import com.google.gson.annotations.SerializedName;
+import org.goit.model.IObjectToString;
 
-public class User {
+public class User implements IObjectToString {
 
   @SerializedName("id")
-  private Integer id = 0;
+  private long id;
 
   @SerializedName("username")
-  private String userName = "string";
+  private String userName;
 
   @SerializedName("firstname")
-  private String firstName = "string";
+  private String firstName;
 
   @SerializedName("lastname")
-  private String lastName = "string";
+  private String lastName;
 
   @SerializedName("email")
-  private String email = "string";
+  private String email;
 
   @SerializedName("password")
-  private String password = "string";
+  private String password;
 
   @SerializedName("phone")
-  private String phone = "string";
+  private String phone;
 
   @SerializedName("userstatus")
-  private Integer userStatus = 0;
+  private int userStatus;
 
-  public Integer getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -84,11 +85,16 @@ public class User {
     this.phone = phone;
   }
 
-  public Integer getUserStatus() {
+  public int getUserStatus() {
     return userStatus;
   }
 
-  public void setUserStatus(Integer userStatus) {
+  public void setUserStatus(int userStatus) {
     this.userStatus = userStatus;
+  }
+
+  @Override
+  public String toString() {
+    return jsonObjectString().toJson(this);
   }
 }

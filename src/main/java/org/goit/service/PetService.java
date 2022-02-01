@@ -1,8 +1,10 @@
 package org.goit.service;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import io.netty.handler.codec.http.HttpMethod;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 import org.apache.http.*;
@@ -12,6 +14,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.*;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.goit.api_response.ApiResponse;
 import org.goit.model.pets.*;
 
 public class PetService {
@@ -25,8 +28,8 @@ public class PetService {
   private static final Pet pet = new Pet();
   private static final Gson GSON = new Gson();
 
-  private static String getBody(Integer id, Integer categoryId, String categoryName, String petName,
-                               Integer tagsId, String tagName, String status) {
+  private static String getBody(Long id, Long categoryId, String categoryName, String petName,
+                               Long tagsId, String tagName, String status) {
     category.setId(categoryId);
     category.setName(categoryName);
     tag.setId(tagsId);
@@ -40,7 +43,7 @@ public class PetService {
     return GSON.toJson(pet);
   }
 
-  public static String uploadPetImage(Integer id, String pathFileToPhoto, String additionalMetadata)
+  public static ApiResponse uploadPetImage(Integer id, String pathFileToPhoto, String additionalMetadata)
       throws IOException {
     CloseableHttpClient httpClient = HttpClients.createDefault();
     httpPost = new HttpPost(URL + "/" + id + "/uploadImage");
@@ -58,61 +61,54 @@ public class PetService {
     httpPost.setEntity(multipart);
     CloseableHttpResponse response = httpClient.execute(httpPost);
     HttpEntity responseEntity = response.getEntity();
-    return EntityUtils.toString(responseEntity);
+    return GSON.fromJson(EntityUtils.toString(responseEntity), ApiResponse.class);
   }
 
-  public static String addPet(Integer id, Integer categoryId, String categoryName, String petName,
-      Integer tagsId, String tagName, String status) throws Exception {
+  public static Pet addPet(Long id, Long categoryId, String categoryName, String petName,
+      Long tagsId, String tagName, String status) throws Exception {
     httpPost = (HttpPost) HttpApiService.methodOfHttp(new URL(URL), HttpMethod.POST);
     String json = getBody(id, categoryId, categoryName, petName,  tagsId, tagName, status);
     httpPost.setEntity(new StringEntity(json));
-    return HttpApiService.getRequest(httpPost);
+
+    return GSON.fromJson(HttpApiService.getRequest(httpPost), Pet.class);
   }
 
-  public static String addPet() throws Exception {
-    return addPet(pet.getId(), category.getId(), category.getName(), pet.getName(),
-        tag.getId(), tag.getName(), pet.getStatus());
-  }
-
-  public static String updatePet(Integer id, Integer categoryId, String categoryName,
-      String petName, Integer tagsId, String tagName, String status)
+  public static Pet updatePet(Long id, Long categoryId, String categoryName,
+      String petName, Long tagsId, String tagName, String status)
       throws IOException, HttpException {
     HttpPut httpPut = (HttpPut) HttpApiService.methodOfHttp(new URL(URL), HttpMethod.PUT);
     String json = getBody(id, categoryId, categoryName, petName, tagsId, tagName, status);
     httpPut.setEntity(new StringEntity(json));
-    return HttpApiService.getRequest(httpPut);
+    return GSON.fromJson(HttpApiService.getRequest(httpPut), Pet.class);
   }
 
-  public static String updatePet() throws IOException, HttpException {
-    return updatePet(pet.getId(), category.getId(), category.getName(), pet.getName(),
-        tag.getId(), tag.getName(), pet.getStatus());
-  }
-
-  public static String findPetByStatus(String status) throws IOException, HttpException { //available, pending, sold
+  public static Collection<Pet> findPetByStatus(String status) throws IOException, HttpException { //available, pending, sold
     httpGet = (HttpGet) HttpApiService
         .methodOfHttp(new URL(URL+ "/findByStatus?status=" + status), HttpMethod.GET);
-    return HttpApiService.getRequest(httpGet);
+    Type collectionType = new TypeToken<Collection<Pet>>(){}.getType();
+    return GSON.fromJson(HttpApiService.getRequest(httpGet), collectionType);
   }
 
-  public static String findPetById(Integer id) throws IOException, HttpException {
+  public static Pet findPetById(Long id) throws IOException, HttpException {
     httpGet = (HttpGet) HttpApiService
         .methodOfHttp(new URL(URL+ "/" + id), HttpMethod.GET);
-    return HttpApiService.getRequest(httpGet);
+    return GSON.fromJson(HttpApiService.getRequest(httpGet), Pet.class);
   }
 
-  public static String updatePetFromDAta(Integer id) throws IOException, HttpException {
+  public static ApiResponse updatePetFromData(Long id, String name, String status) throws IOException, HttpException {
     httpPost = (HttpPost) HttpApiService
         .methodOfHttpWithDataContentType(new URL(URL + "/" + id), HttpMethod.POST);
     List<NameValuePair> urlParameters = new ArrayList<>();
     urlParameters.add(new BasicNameValuePair("petId ", id.toString()));
+    urlParameters.add(new BasicNameValuePair("name ", name));
+    urlParameters.add(new BasicNameValuePair("status ", status));
     httpPost.setEntity(new StringEntity(urlParameters.toString()));
-    return HttpApiService.getRequest(httpPost);
+    return GSON.fromJson(HttpApiService.getRequest(httpPost), ApiResponse.class);
   }
 
-  public static String deletePet(Integer id) throws IOException, HttpException {
+  public static ApiResponse deletePet(Long id) throws IOException, HttpException {
     HttpDelete httpDelete = (HttpDelete) HttpApiService.methodOfHttp(new URL(URL + "/" + id), HttpMethod.DELETE);
     httpDelete.addHeader("api_key", "special-key");
-    return HttpApiService.getRequest(httpDelete);
+    return GSON.fromJson(HttpApiService.getRequest(httpDelete), ApiResponse.class);
   }
-
 }

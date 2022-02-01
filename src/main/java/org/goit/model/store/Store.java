@@ -1,26 +1,27 @@
 package org.goit.model.store;
 
 import com.google.gson.annotations.SerializedName;
+import org.goit.model.IObjectToString;
 
-public class Store {
+public class Store implements IObjectToString {
 
   @SerializedName("id")
-  private Integer id = 0;
+  private Integer id;
 
   @SerializedName("petId")
-  private Integer petId = 0;
+  private Integer petId;
 
   @SerializedName("quantity")
-  private Integer quantity = 0;
+  private Integer quantity;
 
   @SerializedName("shipDate")
   private String shipDate;
 
   @SerializedName("status")
-  private final String status = "placed";
+  private String status;
 
   @SerializedName("complete")
-  private final boolean complete = true;
+  private boolean complete;
 
   public Integer getId() {
     return id;
@@ -60,5 +61,10 @@ public class Store {
 
   public boolean isComplete() {
     return complete;
+  }
+
+  @Override
+  public String toString() {
+    return jsonObjectString().toJson(this);
   }
 }

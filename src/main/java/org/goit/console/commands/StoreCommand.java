@@ -35,8 +35,6 @@ public class StoreCommand implements Command {
       System.out.println(StoreService.orderPet(Integer.parseInt(paramsArray[0]),
                                                Integer.parseInt(paramsArray[1]),
                                                Integer.parseInt(paramsArray[2])));
-    } else if (paramsArray.length == 1) {
-      System.out.println(StoreService.orderPet());
     }
   }
 
@@ -55,8 +53,7 @@ public class StoreCommand implements Command {
     LOGGER.info("---------------------Store menu---------------------");
     LOGGER.info("Store command list:");
     LOGGER.info("inventory");
-    LOGGER.info("Without params: orderPet\n" +
-                   "With params: orderPet [id] [petId] [quantity]");
+    LOGGER.info("orderPet [id] [petId] [quantity]");
     LOGGER.info("findOrderById [id]");
     LOGGER.info("deleteOrderById [id]");
   }

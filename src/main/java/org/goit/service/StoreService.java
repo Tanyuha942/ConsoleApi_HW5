@@ -9,6 +9,8 @@ import java.util.*;
 import org.apache.http.HttpException;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
+import org.goit.api_response.InventoryResponse;
+import org.goit.api_response.ApiResponse;
 import org.goit.model.store.Store;
 
 public class StoreService {
@@ -30,32 +32,28 @@ public class StoreService {
     return GSON.toJson(store);
   }
 
-  public static String inventory() throws IOException, HttpException {
+  public static InventoryResponse inventory() throws IOException, HttpException {
     httpGet = (HttpGet) HttpApiService.methodOfHttp(new URL(URL + "/inventory"), HttpMethod.GET);
-    return HttpApiService.getRequest(httpGet);
+    return GSON.fromJson(HttpApiService.getRequest(httpGet), InventoryResponse.class);
   }
 
-  public static String orderPet(Integer id, Integer petId, Integer quantity)
+  public static Store orderPet(Integer id, Integer petId, Integer quantity)
       throws IOException, HttpException {
     HttpPost httpPost = (HttpPost) HttpApiService.methodOfHttp(new URL(URL + "/order"),
         HttpMethod.POST);
     String json = getBody(id, petId, quantity);
     httpPost.setEntity(new StringEntity(json));
-    return HttpApiService.getRequest(httpPost);
+    return GSON.fromJson(HttpApiService.getRequest(httpPost), Store.class);
   }
 
-  public static String orderPet() throws IOException, HttpException {
-    return orderPet(store.getId(), store.getPetId(), store.getQuantity());
-  }
-
-  public static String findOrderById(Integer id) throws IOException, HttpException {
+  public static ApiResponse findOrderById(Integer id) throws IOException, HttpException {
     httpGet = (HttpGet) HttpApiService.methodOfHttp(new URL(URL + "/order/" + id), HttpMethod.GET);
-    return HttpApiService.getRequest(httpGet);
+    return GSON.fromJson(HttpApiService.getRequest(httpGet), ApiResponse.class);
   }
 
-  public static String deleteOrderById(Integer id) throws IOException, HttpException {
+  public static ApiResponse deleteOrderById(Integer id) throws IOException, HttpException {
     HttpDelete httpDelete = (HttpDelete) HttpApiService
         .methodOfHttp(new URL(URL + "/order/" + id), HttpMethod.DELETE);
-    return HttpApiService.getRequest(httpDelete);
+    return GSON.fromJson(HttpApiService.getRequest(httpDelete), ApiResponse.class);
   }
 }

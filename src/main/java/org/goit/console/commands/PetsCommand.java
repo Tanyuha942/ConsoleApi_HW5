@@ -23,48 +23,50 @@ public class PetsCommand implements Command {
       case "updatePet": updatePet(subParams); break;
       case "findPetByStatus": findPetByStatus(subParams); break;
       case "findPetById": findPetById(subParams); break;
-      case "updatePetFromDAta": updatePetFromDAta(subParams); break;
+      case "updatePetFromData": updatePetFromData(subParams); break;
       case "deletePet": deletePet(subParams); break;
     }
   }
 
   private void uploadPetImage(String params) throws IOException {
     paramsArray = params.split(" ");
-    Integer id = Integer.parseInt(paramsArray[0]);
-    String pathFileToPhoto = paramsArray[1];
-    String additionalMetadata = paramsArray[2];
-    System.out.println(PetService.uploadPetImage(id, pathFileToPhoto, additionalMetadata));
+    if (paramsArray.length > 1) {
+      Integer id = Integer.parseInt(paramsArray[0]);
+      String pathFileToPhoto = paramsArray[1];
+      String additionalMetadata = paramsArray[2];
+      System.out.println(PetService.uploadPetImage(id, pathFileToPhoto, additionalMetadata));
+    } else {
+      System.out.println("Wrong command!");
+    }
   }
 
   private void addPet(String params) throws Exception {
     paramsArray = params.split(" ");
     if (paramsArray.length > 1) {
-      System.out.println(PetService.addPet(Integer.parseInt(paramsArray[0]),
-                                           Integer.parseInt(paramsArray[1]),
+      System.out.println(PetService.addPet(Long.parseLong(paramsArray[0]),
+                                           Long.parseLong(paramsArray[1]),
                                            paramsArray[2],
                                            paramsArray[3],
-                                           Integer.parseInt(paramsArray[4]),
+                                           Long.parseLong(paramsArray[4]),
                                            paramsArray[5],
                                            paramsArray[6]));
-    }
-    else {
-      System.out.println(PetService.addPet());
+    } else {
+      System.out.println("Wrong command!");
     }
   }
 
   private void updatePet(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
     if (paramsArray.length > 1) {
-      System.out.println(PetService.updatePet(Integer.parseInt(paramsArray[0]),
-          Integer.parseInt(paramsArray[1]),
+      System.out.println(PetService.updatePet(Long.parseLong(paramsArray[0]),
+          Long.parseLong(paramsArray[1]),
           paramsArray[2],
           paramsArray[3],
-          Integer.parseInt(paramsArray[4]),
+          Long.parseLong(paramsArray[4]),
           paramsArray[5],
           paramsArray[6]));
-    }
-    else {
-      System.out.println(PetService.updatePet());
+    } else {
+      System.out.println("Wrong command!");
     }
   }
 
@@ -75,17 +77,31 @@ public class PetsCommand implements Command {
 
   private void findPetById(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
-    System.out.println(PetService.findPetById(Integer.parseInt(paramsArray[0])));
+    if (paramsArray.length > 0) {
+    System.out.println(PetService.findPetById(Long.parseLong(paramsArray[0])));
+    } else {
+      System.out.println("Wrong command!");
+    }
   }
 
-  private void updatePetFromDAta(String params) throws HttpException, IOException {
+  private void updatePetFromData(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
-    System.out.println(PetService.updatePetFromDAta(Integer.parseInt(paramsArray[0])));
+    if (paramsArray.length > 1) {
+      System.out.println(PetService.updatePetFromData(Long.parseLong(paramsArray[0]),
+          paramsArray[1],
+          paramsArray[2]));
+    } else {
+      System.out.println("Wrong command!");
+    }
   }
 
   private void deletePet(String params) throws HttpException, IOException {
     paramsArray = params.split(" ");
-    System.out.println(PetService.deletePet(Integer.parseInt(paramsArray[0])));
+    if (paramsArray.length > 0) {
+      System.out.println(PetService.deletePet(Long.parseLong(paramsArray[0])));
+    } else {
+      System.out.println("Wrong command!");
+    }
   }
 
   @Override
@@ -93,13 +109,11 @@ public class PetsCommand implements Command {
     LOGGER.info("---------------------Pet menu---------------------");
     LOGGER.info("Pets command list:");
     LOGGER.info("uploadPetImage [id] [pathFileToPhoto] [additionalMetadata]");
-    LOGGER.info("Without params: addPet\n" +
-    "With params: addPet [id] [categoryId] [categoryName] [petName] [tagsId] [tagName] [status(available, pending, sold)]");
-    LOGGER.info("Without params: updatePet\n" +
-    "With params: updatePet [id] [categoryId] [categoryName] [petName] [tagsId] [tagName] [status(available, pending, sold)]");
+    LOGGER.info("addPet [id] [categoryId] [categoryName] [petName] [tagsId] [tagName] [status(available, pending, sold)]");
+    LOGGER.info("updatePet [id] [categoryId] [categoryName] [petName] [tagsId] [tagName] [status(available, pending, sold)]");
     LOGGER.info("findPetByStatus [status(available, pending, sold)]");
     LOGGER.info("findPetById [id]");
-    LOGGER.info("updatePetFromDAta [id]");
+    LOGGER.info("updatePetFromData [id] [name] [status(available, pending, sold)]");
     LOGGER.info("deletePet [id]");
   }
 }
