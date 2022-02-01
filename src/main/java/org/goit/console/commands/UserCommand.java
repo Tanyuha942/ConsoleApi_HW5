@@ -114,7 +114,7 @@ public class UserCommand implements Command {
         users.add(user);
       }
     }
-    System.out.println(users);
+//    System.out.println(users);
     System.out.println(UserService.createWithList(users));
   }
 
